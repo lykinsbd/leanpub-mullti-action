@@ -1,2 +1,3 @@
-# leanpub-mullti-action
+# Leanpub multi-action
+
 Interact with Leanpub via GitHub Actions
