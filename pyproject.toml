@@ -21,7 +21,7 @@ toml = "*"
 flake8 = "*"
 
 [tool.poetry.scripts]
-leanpub-multi-action = 'leanpub_multi_action.cli:main'
+lma = 'leanpub_multi_action.cli:main'
 
 [tool.black]
 line-length = 120
