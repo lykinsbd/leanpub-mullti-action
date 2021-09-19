@@ -6,7 +6,7 @@ authors = ["Brett Lykins <lykinsbd@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-requests = "^2.29.0"
+requests = "^2"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
