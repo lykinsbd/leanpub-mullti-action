@@ -12,6 +12,7 @@ except ImportError:
 
 def is_truthy(arg):
     """Convert "truthy" strings into Booleans.
+
     Examples:
         >>> is_truthy('yes')
         True
@@ -41,6 +42,7 @@ INVOKE_LOCAL = is_truthy(os.getenv("INVOKE_LOCAL", False))  # pylint: disable=W1
 
 def run_cmd(context, exec_cmd, local=INVOKE_LOCAL):
     """Wrapper to run the invoke task commands.
+
     Args:
         context ([invoke.task]): Invoke task object.
         exec_cmd ([str]): Command to run.

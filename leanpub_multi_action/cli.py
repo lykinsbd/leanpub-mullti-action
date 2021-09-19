@@ -1,4 +1,4 @@
-"""Leanpub Actions for GitHub Actions Workflows"""
+"""Leanpub Actions for GitHub Actions Workflows."""
 import sys
 
 import click
@@ -6,7 +6,7 @@ import click
 
 @click.command()
 @click.option("--test", help="Test argument")
-def main(test: str) -> int:
+def main(test: str = None) -> int:
     """Entrypoint into our script.
 
     Args:
@@ -21,5 +21,4 @@ def main(test: str) -> int:
 
 
 if __name__ == "__main__":
-    exit_code = main()
-    sys.exit(exit_code)
+    sys.exit(main())
