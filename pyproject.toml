@@ -6,6 +6,7 @@ authors = ["Brett Lykins <lykinsbd@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+requests = "^2.29.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
@@ -73,4 +74,4 @@ build-backend = "poetry.masonry.api"
 testpaths = [
     "tests"
 ]
-adopts = "-vv --doctest-modules"
+addopts = "-vv --doctest-modules"
