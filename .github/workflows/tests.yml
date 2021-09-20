@@ -1,26 +1,24 @@
+---
 # This action will run the integration and unit tests, as well as all linters
-name: 'Test Runner'
+name: "Test Runner"
 
-on:
+"on":
   push:
-    branches: [main]
-  
+    branches: ["main"]
+
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  workflow_dispatch: null
 
 jobs:
   run_tests:
-    runs-on: ubuntu-latest
-    name: Run Tests
+    runs-on: "ubuntu-latest"
+    name: "Run Tests"
     steps:
       # To use this repository's private action,
       # you must check out the repository
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Hello world action step
-        uses: ./ # Uses an action in the root directory
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Launch Container"
+        uses: "./"  # Uses an action in the root directory
         with:
-          leanpub-api-key: 'lulz' # Don't need the api key to run tests
-      # Use the output from the `hello` step
-      # - name: Get the output time
-      #   run: echo "The time was ${{ steps.hello.outputs.time }}"
+          leanpub-api-key: "lulz"  # Don't need the api key to run tests
