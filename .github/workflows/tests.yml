@@ -21,4 +21,5 @@ jobs:
       - name: "Launch Container"
         uses: "./"  # Uses an action in the root directory
         with:
-          entrypoint: "invoke tests --local"
+          entrypoint: "invoke"
+          args: "tests --local"
