@@ -73,20 +73,6 @@ jobs:
         run: "poetry run invoke yamllint"
     needs:
       - "black"
-  build:
-    runs-on: "ubuntu-20.04"
-    steps:
-      - name: "Check out repository code"
-        uses: "actions/checkout@v2"
-      - name: "Setup environment"
-        uses: "./.github/actions/setup-environment"
-      - name: "Build a container"
-        run: "poetry run invoke build"
-    needs:
-      - "bandit"
-      - "pydocstyle"
-      - "flake8"
-      - "yamllint"
   pylint:
     runs-on: "ubuntu-20.04"
     steps:
@@ -94,12 +80,23 @@ jobs:
         uses: "actions/checkout@v2"
       - name: "Setup environment"
         uses: "./.github/actions/setup-environment"
-      - name: "Build a container"
-        run: "poetry run invoke build"
       - name: "Linting: Pylint"
         run: "poetry run invoke pylint"
     needs:
-      - "build"
+      - "black"
+  build:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Build a container"
+        run: "poetry run invoke build"
+    needs:
+      - "bandit"
+      - "pydocstyle"
+      - "flake8"
+      - "yamllint"
+      - "pylint"
   pytest:
     strategy:
       fail-fast: true
@@ -113,11 +110,9 @@ jobs:
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
-      - name: "Setup environment"
-        uses: "./.github/actions/setup-environment"
       - name: "Build a container"
         run: "poetry run invoke build"
       - name: "Run Tests"
         run: "poetry run invoke pytest"
     needs:
-      - "pylint"
+      - "build"
