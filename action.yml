@@ -6,11 +6,6 @@ inputs:
   leanpub-api-key:
     description: "Leanpub API Key"
     required: true
-  tests:
-    description: "Run Tests on this Action"
-    required: false
 runs:
   using: "docker"
   image: "Dockerfile"
-  args:
-    - "${{ inputs.leanpub-api-key }}"

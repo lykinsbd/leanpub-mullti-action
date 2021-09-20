@@ -10,16 +10,120 @@ name: "Test Runner"
   workflow_dispatch: null
 
 jobs:
-  run_tests:
-    runs-on: "ubuntu-latest"
-    name: "Run Tests"
+  black:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
-      - name: "Checkout"
+      - name: "Check out repository code"
         uses: "actions/checkout@v2"
-      - name: "Launch Container"
-        uses: "./"  # Uses an action in the root directory
-        with:
-          entrypoint: "invoke"
-          args: "tests --local"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Linting: black"
+        run: "poetry run invoke black"
+  bandit:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Linting: bandit"
+        run: "poetry run invoke bandit"
+    needs:
+      - "black"
+  pydocstyle:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Linting: pydocstyle"
+        run: "poetry run invoke pydocstyle"
+    needs:
+      - "black"
+  flake8:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Linting: flake8"
+        run: "poetry run invoke flake8"
+    needs:
+      - "black"
+  yamllint:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Linting: yamllint"
+        run: "poetry run invoke yamllint"
+    needs:
+      - "black"
+  build:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Copy credentials"
+        run: "cp development/creds.example.env development/creds.env"
+      - name: "Build a container"
+        run: "poetry run invoke build"
+    needs:
+      - "bandit"
+      - "pydocstyle"
+      - "flake8"
+      - "yamllint"
+  pylint:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Copy credentials"
+        run: "cp development/creds.example.env development/creds.env"
+      - name: "Build a container"
+        run: "poetry run invoke build"
+      - name: "Linting: Pylint"
+        run: "poetry run invoke pylint"
+    needs:
+      - "build"
+  unittest:
+    strategy:
+      fail-fast: true
+      # If unittests need to run with any other variable put
+      # the variable as a list under the `matrix`
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_PYTHON_VER: "${{ matrix.python-version }}"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Copy credentials"
+        run: "cp development/creds.example.env development/creds.env"
+      - name: "Build a container"
+        run: "poetry run invoke build"
+      - name: "Run Tests"
+        run: "poetry run invoke unittest"
+    needs:
+      - "pylint"
