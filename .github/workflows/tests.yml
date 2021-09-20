@@ -21,4 +21,4 @@ jobs:
       - name: "Launch Container"
         uses: "./"  # Uses an action in the root directory
         with:
-          leanpub-api-key: "lulz"  # Don't need the api key to run tests
+          entrypoint: "invoke tests"

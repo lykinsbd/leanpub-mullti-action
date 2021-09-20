@@ -10,3 +10,5 @@ COPY pyproject.toml /local
 
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
+
+ENTRYPOINT ["lma", "--leanpub_api_key"]
