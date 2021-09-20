@@ -75,6 +75,8 @@ jobs:
       - "black"
   pylint:
     runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
