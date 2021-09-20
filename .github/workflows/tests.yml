@@ -86,11 +86,28 @@ jobs:
         run: "poetry run invoke pylint"
     needs:
       - "black"
+  pytest:
+    strategy:
+      fail-fast: true
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Run Tests"
+        run: "poetry run invoke pytest"
+    needs:
+      - "black"
   build:
     runs-on: "ubuntu-20.04"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
       - name: "Build a container"
         run: "poetry run invoke build"
     needs:
@@ -99,22 +116,4 @@ jobs:
       - "flake8"
       - "yamllint"
       - "pylint"
-  pytest:
-    strategy:
-      fail-fast: true
-      # If pytests need to run with any other variable put
-      # the variable as a list under the `matrix`
-      matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
-    runs-on: "ubuntu-20.04"
-    env:
-      INVOKE_PYTHON_VER: "${{ matrix.python-version }}"
-    steps:
-      - name: "Check out repository code"
-        uses: "actions/checkout@v2"
-      - name: "Build a container"
-        run: "poetry run invoke build"
-      - name: "Run Tests"
-        run: "poetry run invoke pytest"
-    needs:
-      - "build"
+      - "pytest"
