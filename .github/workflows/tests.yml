@@ -100,10 +100,10 @@ jobs:
         run: "poetry run invoke pylint"
     needs:
       - "build"
-  unittest:
+  pytest:
     strategy:
       fail-fast: true
-      # If unittests need to run with any other variable put
+      # If pytests need to run with any other variable put
       # the variable as a list under the `matrix`
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9"]
@@ -118,6 +118,6 @@ jobs:
       - name: "Build a container"
         run: "poetry run invoke build"
       - name: "Run Tests"
-        run: "poetry run invoke unittest"
+        run: "poetry run invoke pytest"
     needs:
       - "pylint"
