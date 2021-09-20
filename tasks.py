@@ -29,11 +29,11 @@ PYPROJECT_CONFIG = toml.load("pyproject.toml")
 TOOL_CONFIG = PYPROJECT_CONFIG["tool"]["poetry"]
 
 # Can be set to a separate Python version to be used for launching or building image
-PYTHON_VER = os.getenv("PYTHON_VER", "3.9")
+INVOKE_PYTHON_VER = os.getenv("INVOKE_PYTHON_VER", "3.9")
 # Name of the docker image/image
 IMAGE_NAME = os.getenv("IMAGE_NAME", TOOL_CONFIG["name"])
 # Tag for the image
-IMAGE_VER = os.getenv("IMAGE_VER", f"{TOOL_CONFIG['version']}-py{PYTHON_VER}")
+IMAGE_VER = os.getenv("IMAGE_VER", f"{TOOL_CONFIG['version']}-py{INVOKE_PYTHON_VER}")
 # Gather current working directory for Docker commands
 PWD = os.getcwd()
 # Local or Docker execution provide "local" to run locally without docker execution
@@ -70,7 +70,7 @@ def run_cmd(context, exec_cmd, local=INVOKE_LOCAL):
 def build(context, cache=True, force_rm=False, hide=False):
     """Build a Docker image."""
     print(f"Building image {IMAGE_NAME}:{IMAGE_VER}")
-    command = f"docker build --tag {IMAGE_NAME}:{IMAGE_VER} --build-arg PYTHON_VER={PYTHON_VER} -f Dockerfile ."
+    command = f"docker build --tag {IMAGE_NAME}:{IMAGE_VER} --build-arg PYTHON_VER={INVOKE_PYTHON_VER} -f Dockerfile ."
 
     if not cache:
         command += " --no-cache"
