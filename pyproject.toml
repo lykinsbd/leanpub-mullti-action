@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "leanpub-multi-action"
-version = "0.1.6"
+version = "0.2.0"
 description = "GitHub Actions for Leanpub.com"
 authors = ["Brett Lykins <lykinsbd@gmail.com>"]
 
@@ -20,6 +20,7 @@ bandit = "*"
 invoke = "*"
 toml = "*"
 flake8 = "*"
+towncrier = "*"
 
 [tool.poetry.scripts]
 lma = 'leanpub_multi_action.cli:main'
@@ -75,3 +76,8 @@ testpaths = [
     "tests"
 ]
 addopts = "-vv --doctest-modules"
+
+[tool.towncrier]
+package = "leanpub_multi_action"
+filename = "NEWS.rst"
+name = "Leanpub Multi Action"
