@@ -1,0 +1,68 @@
+---
+# This action will cut a release based on a tagged commit in "main"
+name: "Publish Artifacts to Github"
+
+"on":
+  push:
+    branches:
+      - "main"
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - "v*"
+
+jobs:
+  publish_python:
+    name: "Publish Python Artifacts"
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Set env"
+        run: "echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV"
+      - name: "Run poetry version"
+        run: "poetry version $RELEASE_VERSION"
+      - name: "Run poetry build"
+        run: "poetry build"
+      - name: "Upload binaries to release"
+        uses: "svenstaro/upload-release-action@v2"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          file: "dist/*"
+          tag: "${{ github.ref }}"
+          overwrite: true
+          file_glob: true
+  publish_container:
+    name: "Publish Container Artifacts"
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
+      INVOKE_PYTHON_VERSION: "3.9"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Set env"
+      - name: "Build image"
+        run: "invoke build"
+      - name: "Log in to registry"
+        # This is where you will update the PAT to GITHUB_TOKEN
+        run: "echo \"${{ secrets.GITHUB_TOKEN }}\" | docker login ghcr.io -u ${{ github.actor }} --password-stdin"
+      - name: "Push image"
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
