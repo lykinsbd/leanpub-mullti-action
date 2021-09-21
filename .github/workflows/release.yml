@@ -44,7 +44,6 @@ jobs:
         uses: "actions/checkout@v2"
       - name: "Setup environment"
         uses: "./.github/actions/setup-environment"
-      - name: "Set env"
       - name: "Build image"
         run: "invoke build"
       - name: "Log in to registry"
