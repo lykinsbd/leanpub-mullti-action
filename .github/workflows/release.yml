@@ -1,11 +1,9 @@
 ---
-# This action will cut a release based on a tagged commit in "main"
+# This action will cut a release based on a tagged commit that starts with "v"
 name: "Publish Artifacts to Github"
 
 "on":
   push:
-    branches:
-      - "main"
     # Publish `v1.2.3` tags as releases.
     tags:
       - "v*"
@@ -14,6 +12,7 @@ jobs:
   publish_python:
     name: "Publish Python Artifacts"
     runs-on: "ubuntu-20.04"
+    if: github.event.base_ref == 'refs/heads/main'
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
@@ -36,6 +35,7 @@ jobs:
   publish_container:
     name: "Publish Container Artifacts"
     runs-on: "ubuntu-20.04"
+    if: github.event.base_ref == 'refs/heads/main'
     env:
       INVOKE_LOCAL: "True"
       INVOKE_PYTHON_VERSION: "3.9"
