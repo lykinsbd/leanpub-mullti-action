@@ -98,7 +98,7 @@ unicode_backport = ["unicodedata2"]
 name = "click"
 version = "8.0.1"
 description = "Composable command line interface toolkit"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -120,7 +120,7 @@ click = "*"
 name = "colorama"
 version = "0.4.4"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -553,7 +553,7 @@ pyyaml = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2ebbfe467c6a797a400e715872a0950d9b1a0d318ad356398409519fb331fe37"
+content-hash = "489e30c39d98f5ad9c3e577746af2e06da0e100c46f5f0805a4a49d3bd922730"
 
 [metadata.files]
 astroid = [
