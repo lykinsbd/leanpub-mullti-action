@@ -4,7 +4,8 @@ API Docs: https://leanpub.com/help/api
 API URL: https://leanpub.com/
 """
 
-from typing import Optional, Union
+from typing import Optional, Tuple
+
 import requests
 
 
@@ -26,16 +27,17 @@ class Leanpub(requests.Session):
         self.leanpub_api_key = leanpub_api_key
         self.leanpub_url = "https://leanpub.com/"
 
-    def preview(self, book_slug: str) -> Union[Optional[requests.Response], Optional[requests.RequestException]]:
+    def preview(self, book_slug: str) -> Tuple[Optional[requests.Response], Optional[requests.RequestException]]:
         """Request a Preview be built of the book_slug provided.
 
         Args:
             book_slug (str): book_slug to generate a Preview of
         """
         url = f"{self.leanpub_url}{book_slug}/preview.json"
-        payload = {"api_key", self.leanpub_api_key}
+        payload = {"api_key": self.leanpub_api_key}
         try:
-            resp = self.post(url=url, payload=payload)
+            resp = self.post(url=url, json=payload)
+            resp.raise_for_status()
         except requests.RequestException as exception:
             return None, exception
 

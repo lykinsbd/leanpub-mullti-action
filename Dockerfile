@@ -1,13 +1,15 @@
-ARG PYTHON_VER
-
 FROM python:3.9-slim
 
-RUN pip install --upgrade pip \
-    && pip install poetry
+ARG LMA_VERSION
+ENV LMA_VERSION $LMA_VERSION
+ARG WHEEL_DIR .
+ENV WHEEL_DIR $WHEEL_DIR
 
-WORKDIR /local
-COPY pyproject.toml /local
+RUN pip install --upgrade pip
 
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+WORKDIR /app
+COPY $WHEEL_DIR/leanpub_multi_action-$LMA_VERSION-py3-none-any.whl /app
 
+RUN pip install leanpub_multi_action-$LMA_VERSION-py3-none-any.whl
+
+ENTRYPOINT [ "lma" ]

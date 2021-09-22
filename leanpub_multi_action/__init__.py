@@ -8,4 +8,3 @@ except ImportError:
     import importlib_metadata as metadata
 
 __version__ = metadata.version(__name__)
-print(__version__)

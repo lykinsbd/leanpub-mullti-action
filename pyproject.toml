@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "leanpub-multi-action"
-version = "0.2.0"
+version = "0.3.0"
 description = "GitHub Actions for Leanpub.com"
 authors = ["Brett Lykins <lykinsbd@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2"
+click = "^8"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
@@ -23,11 +24,11 @@ flake8 = "*"
 towncrier = "*"
 
 [tool.poetry.scripts]
-lma = 'leanpub_multi_action.cli:main'
+lma = "leanpub_multi_action.cli:main"
 
 [tool.black]
 line-length = 120
-target-version = ['py37']
+target-version = ["py39"]
 include = '\.pyi?$'
 exclude = '''
 (
@@ -68,7 +69,7 @@ notes = """,
     """
 
 [build-system]
-requires = ["poetry>=0.12"]
+requires = ["poetry>=1.1"]
 build-backend = "poetry.masonry.api"
 
 [tool.pytest.ini_options]

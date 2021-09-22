@@ -6,6 +6,13 @@ inputs:
   leanpub-api-key:
     description: "Leanpub API Key"
     required: true
+  leanpub-book-slug:
+    description: "Leanpub Book Slug"
+    required: true
+  preview:
+    description: "Start a Preview job"
+    required: false
+    default: false
 runs:
   using: "docker"
-  image: "Dockerfile"
+  image: "ghcr.io/lykinsbd/leanpub-multi-action:latest"
