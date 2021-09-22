@@ -5,6 +5,7 @@ API URL: https://leanpub.com/
 """
 
 from typing import Optional, Union
+
 import requests
 
 
@@ -33,9 +34,9 @@ class Leanpub(requests.Session):
             book_slug (str): book_slug to generate a Preview of
         """
         url = f"{self.leanpub_url}{book_slug}/preview.json"
-        payload = {"api_key", self.leanpub_api_key}
+        payload = {"api_key": self.leanpub_api_key}
         try:
-            resp = self.post(url=url, payload=payload)
+            resp = self.post(url=url, json=payload)
         except requests.RequestException as exception:
             return None, exception
 
