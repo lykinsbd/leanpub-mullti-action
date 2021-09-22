@@ -65,7 +65,7 @@ def build(context, cache=True, force_rm=False, hide=False):
         return
 
     print(f"Building Docker image {docker_name}")
-    command = f"docker build --tag {docker_name} --build-arg LMA_VERSION={IMAGE_VER} -f Dockerfile ."
+    command = f"docker build --tag {docker_name} --build-arg LMA_VERSION={IMAGE_VER} --build-arg WHEEL_DIR=dist -f Dockerfile ."
 
     if not cache:
         command += " --no-cache"
