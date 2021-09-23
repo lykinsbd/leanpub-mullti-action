@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "leanpub-multi-action"
-version = "0.3.18"
+version = "0.3.19"
 description = "GitHub Actions for Leanpub.com"
 authors = ["Brett Lykins <lykinsbd@gmail.com>"]
 
