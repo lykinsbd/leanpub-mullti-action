@@ -178,3 +178,21 @@ def tests(context):
     pytest(context)
 
     print("All tests have passed!")
+
+
+@task
+def release(context):
+    """Start a Release on GitHub."""
+    print(f"Starting a release of v{IMAGE_VER} on GitHub!")
+    result = context.run("git checkout main", pty=True)
+    if result.exited != 0:
+        print(f"Failed to checkout main!\nError: {result.stderr}")
+        return
+    result = context.run(f"git tag v{IMAGE_VER}", pty=True)
+    if result.exited != 0:
+        print(f"Failed to create the tag 'v{IMAGE_VER}'!\nError: {result.stderr}")
+        return
+    result = context.run("git push --tags", pty=True)
+    if result.exited != 0:
+        print(f"Failed to push the tag 'v{IMAGE_VER}'!\nError: {result.stderr}")
+        return

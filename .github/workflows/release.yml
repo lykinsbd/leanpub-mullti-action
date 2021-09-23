@@ -71,6 +71,6 @@ jobs:
           tags: "${{ steps.meta.outputs.tags }}"
           labels: "${{ steps.meta.outputs.labels }}"
           build-args: |
-            LMA_VERSION={{ env.RELEASE_VERSION }}
+            LMA_VERSION=${{ env.RELEASE_VERSION }}
     needs:
       - "publish_python"
