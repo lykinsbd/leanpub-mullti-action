@@ -45,7 +45,7 @@ jobs:
       - name: "Gather Python release"
         run: |
           curl -L -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://github.com/${{ env.GITHUB_REPOSITORY }}/releases/download/${{ env.RELEASE_VERSION }}/${{ env.PACKAGE_NAME }}-${{ env.RELEASE_VERSION }}-py3-none-any.whl" \
+          "https://github.com/${{ env.IMAGE_NAME }}/releases/download/${{ env.RELEASE_VERSION }}/${{ env.PACKAGE_NAME }}-${{ env.RELEASE_VERSION }}-py3-none-any.whl" \
           -o "${{ env.PACKAGE_NAME }}-${{ env.RELEASE_VERSION }}-py3-none-any.whl"
       - name: "Gather Docker metadata"
         id: "meta"
