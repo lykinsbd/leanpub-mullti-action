@@ -190,7 +190,7 @@ def release(context):
     if result.exited != 0:
         print(f"Failed to checkout main!\nError: {result.stderr}")
         return
-    
+
     pull = "git pull origin main"
     print(pull)
     result = context.run(pull, pty=True)
