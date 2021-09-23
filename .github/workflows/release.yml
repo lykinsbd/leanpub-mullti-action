@@ -45,7 +45,6 @@ jobs:
         with:
           version: "tags/${{ env.RELEASE_VERSION }}"
           file: "leanpub_multi_action-${{ env.RELEASE_VERSION }}-py3-none-any.whl"
-          target: "./leanpub_multi_action-${{ env.RELEASE_VERSION }}-py3-none-any.whl"
           token: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Gather Docker metadata"
         id: "meta"
