@@ -1,10 +1,9 @@
-Leanpub Multi Action 0.2.0 (2021-09-22)
+Leanpub Multi Action 0.3.0 (2021-09-22)
 =======================================
 
 Features
 --------
 
-- Updated `pyproject.toml` with `Towncrier` dependencies and configuration. (#10)
 - Added initial `Preview` functionality.
 
   Tested and working in Python and in the Container.
