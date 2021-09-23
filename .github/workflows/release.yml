@@ -33,19 +33,20 @@ jobs:
     runs-on: "ubuntu-20.04"
     env:
       REGISTRY: "ghcr.io"
-      IMAGE_NAME: "${{ github.repository }}"
+      IMAGE_NAME: "${{ env.GITHUB_REPOSITORY }}"
 
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
       - name: "Set version environment variable"
         run: "echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV"
+      - name: "Set repository name environment variable"
+        run: "echo REPOSITORY_NAME=${GITHUB_REPOSITORY#*\/} >> $GITHUB_ENV"
       - name: "Gather Python release"
-        uses: "dsaltares/fetch-gh-release-asset@master"
-        with:
-          version: "tags/${{ env.RELEASE_VERSION }}"
-          file: "leanpub_multi_action-${{ env.RELEASE_VERSION }}-py3-none-any.whl"
-          token: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          curl -L -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://github.com/${{ env.GITHUB_REPOSITORY }}/releases/download/${{ env.RELEASE_VERSION }}/${{ env.REPOSITORY_NAME }}-${{ env.RELEASE_VERSION }}-py3-none-any.whl" \
+          -o "${{ env.REPOSITORY_NAME }}-${{ env.RELEASE_VERSION }}-py3-none-any.whl"
       - name: "Gather Docker metadata"
         id: "meta"
         uses: "docker/metadata-action@v3"
