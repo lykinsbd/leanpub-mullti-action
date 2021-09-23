@@ -41,7 +41,7 @@ jobs:
       - name: "Set version environment variable"
         run: "echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV"
       - name: "Set repository name environment variable"
-        run: "echo REPOSITORY_NAME=${GITHUB_REPOSITORY#*\/} >> $GITHUB_ENV"
+        run: 'echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#*\/}" >> $GITHUB_ENV'  # yamllint disable-line rule:quoted-strings
       - name: "Gather Python release"
         run: |
           curl -L -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
