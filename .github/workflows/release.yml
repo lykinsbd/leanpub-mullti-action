@@ -38,14 +38,16 @@ jobs:
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
-      - name: "Set version environment variable"
-        run: "echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV"
+      - name: "Set release name environment variable"
+        run: "echo RELEASE_NAME=${GITHUB_REF:10} >> $GITHUB_ENV"
+      - name: "Set release version environment variable"
+        run: "echo RELEASE_VERSION=${GITHUB_REF:11} >> $GITHUB_ENV"
       - name: "Set Python package name environment variable"
         run: 'echo "PACKAGE_NAME=$(echo ${GITHUB_REPOSITORY#*\/} | tr - _)" >> $GITHUB_ENV'  # yamllint disable-line rule:quoted-strings
       - name: "Gather Python release"
         run: |
           curl -L -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://github.com/${{ env.IMAGE_NAME }}/releases/download/${{ env.RELEASE_VERSION }}/${{ env.PACKAGE_NAME }}-${{ env.RELEASE_VERSION }}-py3-none-any.whl" \
+          "https://github.com/${{ env.IMAGE_NAME }}/releases/download/${{ env.RELEASE_NAME }}/${{ env.PACKAGE_NAME }}-${{ env.RELEASE_VERSION }}-py3-none-any.whl" \
           -o "${{ env.PACKAGE_NAME }}-${{ env.RELEASE_VERSION }}-py3-none-any.whl"
       - name: "Gather Docker metadata"
         id: "meta"
