@@ -184,15 +184,30 @@ def tests(context):
 def release(context):
     """Start a Release on GitHub."""
     print(f"Starting a release of v{IMAGE_VER} on GitHub!")
-    result = context.run("git checkout main", pty=True)
+    checkout = "git checkout main"
+    print(checkout)
+    result = context.run(checkout, pty=True)
     if result.exited != 0:
         print(f"Failed to checkout main!\nError: {result.stderr}")
         return
-    result = context.run(f"git tag v{IMAGE_VER}", pty=True)
+    
+    pull = "git pull origin main"
+    print(pull)
+    result = context.run(pull, pty=True)
+    if result.exited != 0:
+        print(f"Failed to pull from origin main!\nError: {result.stderr}")
+        return
+
+    tag = f"git tag v{IMAGE_VER}"
+    print(tag)
+    result = context.run(tag, pty=True)
     if result.exited != 0:
         print(f"Failed to create the tag 'v{IMAGE_VER}'!\nError: {result.stderr}")
         return
-    result = context.run("git push --tags", pty=True)
+
+    tag_push = "git push --tags"
+    print(tag_push)
+    result = context.run(tag_push, pty=True)
     if result.exited != 0:
         print(f"Failed to push the tag 'v{IMAGE_VER}'!\nError: {result.stderr}")
         return
