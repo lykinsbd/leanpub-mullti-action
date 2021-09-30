@@ -1,20 +1,11 @@
-Leanpub Multi Action 0.3.0 (2021-09-22)
+Leanpub Multi Action 0.4.0 (2021-09-30)Leanpub Multi Action 0.4.0 (2021-09-30)
 =======================================
 
 Features
 --------
 
-- Added initial `Preview` functionality.
+- Introduces `isort` into the test suite and pipeline.
 
-  Tested and working in Python and in the Container.
+  Use `invoke isort` or `invoke tests` to execute locally.
 
-  Pushing up to test in the workflow. (#13)
-
-
-Leanpub Multi Action 0.2.0 (2021-09-21)
-=======================================
-
-Features
---------
-
-- Updated `pyproject.toml` with `Towncrier` dependencies and configuration. (#10)
+  Will run as part of the default push pipeline into Dev. (#32)

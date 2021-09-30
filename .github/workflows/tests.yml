@@ -23,6 +23,19 @@ jobs:
         uses: "./.github/actions/setup-environment"
       - name: "Linting: black"
         run: "poetry run invoke black"
+  isort:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "./.github/actions/setup-environment"
+      - name: "Linting: isort"
+        run: "poetry run invoke isort"
+    needs:
+      - "black"
   bandit:
     runs-on: "ubuntu-20.04"
     env:
@@ -113,6 +126,7 @@ jobs:
       - name: "Test building the Python package and Docker container"
         run: "poetry run invoke build"
     needs:
+      - "isort"
       - "bandit"
       - "pydocstyle"
       - "flake8"
