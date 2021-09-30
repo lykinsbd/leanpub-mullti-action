@@ -147,6 +147,13 @@ def bandit(context):
 
 
 @task
+def isort(context):
+    """Run isort to validate import sortting order is standard."""
+    exec_cmd = "isort . --check --diff"
+    run_cmd(context, exec_cmd)
+
+
+@task
 def cli(context):
     """Enter the image to perform troubleshooting or dev work."""
     dev = f"docker run -it -v {PWD}:/local {IMAGE_NAME}:{IMAGE_VER} /bin/bash"
@@ -170,6 +177,7 @@ def preview(context):
 def tests(context):
     """Run all tests for this repository."""
     black(context)
+    isort(context)
     flake8(context)
     pylint(context)
     yamllint(context)
