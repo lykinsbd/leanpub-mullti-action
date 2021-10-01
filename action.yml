@@ -15,4 +15,8 @@ inputs:
     default: false
 runs:
   using: "docker"
-  image: "ghcr.io/lykinsbd/leanpub-multi-action:latest"
+  image: "docker://ghcr.io/lykinsbd/leanpub-multi-action:latest"
+  args:
+    - "${{ inputs.leanpub-api-key }}"
+    - "${{ inputs.leanpub-book-slug }}"
+    - "${{ inputs.preview }}"

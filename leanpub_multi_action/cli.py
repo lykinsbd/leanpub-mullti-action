@@ -11,18 +11,18 @@ from leanpub_multi_action.leanpub import Leanpub
 @click.command()
 @click.option(
     "--leanpub_api_key",
-    envvar="LEANPUB_API_KEY",
-    help="Leanpub API Key. Will also look for 'LEANPUB_API_KEY' environment variable.",
+    envvar="INPUT_LEANPUB_API_KEY",
+    help="Leanpub API Key. Will also look for 'INPUT_LEANPUB_API_KEY' environment variable.",
 )
 @click.option(
     "--book_slug",
-    envvar="LEANPUB_BOOK_SLUG",
+    envvar="INPUT_LEANPUB_BOOK_SLUG",
     help=(
         "Book Slug is the unique book name on Leanpub.com (i.e. the 'mybook' portion of https://leanpub.com/mybook)."
-        "Will also look for 'LEANPUB_BOOK_SLUG' environment variable."
+        "Will also look for 'INPUT_LEANPUB_BOOK_SLUG' environment variable."
     ),
 )
-@click.option("--preview", is_flag=True, help="Preview a book on Leanpub.")
+@click.option("--preview", envvar="INPUT_PREVIEW", is_flag=True, help="Preview a book on Leanpub.")
 @click.option("--publish", is_flag=True, help="Publish a book on Leanpub.")
 @click.option("--check_status", is_flag=True, help="Check the job status of a Preview or Publish on Leanpub.")
 def main(
