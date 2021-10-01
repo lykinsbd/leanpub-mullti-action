@@ -1,3 +1,12 @@
+Leanpub Multi Action 0.5.0 (2021-09-30)
+=======================================
+
+Features
+--------
+
+- Attempts to fully integrate preview functionality. (#13)
+
+
 Leanpub Multi Action 0.4.0 (2021-09-30)Leanpub Multi Action 0.4.0 (2021-09-30)
 =======================================
 
