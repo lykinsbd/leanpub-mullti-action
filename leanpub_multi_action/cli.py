@@ -11,15 +11,15 @@ from leanpub_multi_action.leanpub import Leanpub
 @click.command()
 @click.option(
     "--leanpub_api_key",
-    envvar="INPUT_LEANPUB_API_KEY",
-    help="Leanpub API Key. Will also look for 'INPUT_LEANPUB_API_KEY' environment variable.",
+    envvar="INPUT_LEANPUB-API-KEY",
+    help="Leanpub API Key. Will also look for 'INPUT_LEANPUB-API-KEY' environment variable.",
 )
 @click.option(
     "--book_slug",
-    envvar="INPUT_LEANPUB_BOOK_SLUG",
+    envvar="INPUT_LEANPUB-BOOK-SLUG",
     help=(
         "Book Slug is the unique book name on Leanpub.com (i.e. the 'mybook' portion of https://leanpub.com/mybook)."
-        "Will also look for 'INPUT_LEANPUB_BOOK_SLUG' environment variable."
+        "Will also look for 'INPUT_LEANPUB-BOOK-SLUG' environment variable."
     ),
 )
 @click.option("--preview", envvar="INPUT_PREVIEW", is_flag=True, help="Preview a book on Leanpub.")

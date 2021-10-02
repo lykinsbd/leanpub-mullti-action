@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "leanpub-multi-action"
-version = "0.5.0"
+version = "0.6.0"
 description = "GitHub Actions for Leanpub.com"
 authors = ["Brett Lykins <lykinsbd@gmail.com>"]
 
@@ -81,7 +81,8 @@ addopts = "-vv --doctest-modules"
 
 [tool.towncrier]
 package = "leanpub_multi_action"
-filename = "NEWS.rst"
+filename = "RELEASE_NOTES.rst"
+single_file = false
 name = "Leanpub Multi Action"
 
 [tool.isort]
