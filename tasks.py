@@ -1,7 +1,9 @@
 """Tasks for use with Invoke."""
 import os
+import pathlib
 import sys
 
+import invoke.exceptions
 from invoke import task
 
 try:
@@ -28,18 +30,24 @@ LEANPUB_BOOK_SLUG = os.getenv("LEANPUB_BOOK_SLUG", "test_book_slug")
 PWD = os.getcwd()
 
 
-def run_cmd(context, exec_cmd):
+def run_cmd(context, exec_cmd, pty=True, hide=False, error_message="An unknown error has occurred!"):
     """Wrapper to run the invoke task commands.
 
     Args:
         context ([invoke.task]): Invoke task object.
         exec_cmd ([str]): Command to run.
+        pty ([bool]): Run command in a pty (default True)
+        hide ([bool]): Suppress output from command to run (default False)
+        error_message ([str]): Error message to print if an error occurs running this command.
 
     Returns:
         result (obj): Contains Invoke result from running task.
     """
     print(f"LOCAL - Running command {exec_cmd}")
-    result = context.run(exec_cmd, pty=True)
+    result = context.run(exec_cmd, pty=pty, hide=hide, warn=True)
+    if not result:
+        print(f"ERROR - {error_message}\n{result.stdout if pty else result.stderr}")
+        raise invoke.exceptions.UnexpectedExit(result)
 
     return result
 
@@ -57,12 +65,12 @@ def build(context, cache=True, force_rm=False, hide=False):
     docker_name = f"{IMAGE_NAME}:{IMAGE_VER}"
 
     print(f"Building Python package {python_name}")
-    py_command = "poetry build"
-    print(py_command)
-    result = context.run(py_command, pty=True)
-    if result.exited != 0:
-        print(f"Failed to build Python package {python_name}\nError: {result.stderr}")
-        return
+    run_cmd(
+        context=context,
+        exec_cmd="poetry build",
+        pty=False,
+        error_message=f"Failed to build Python package {python_name}",
+    )
 
     print(f"Building Docker image {docker_name}")
     command = (
@@ -76,10 +84,13 @@ def build(context, cache=True, force_rm=False, hide=False):
     if force_rm:
         command += " --force-rm"
 
-    print(f"{command}")
-    result = context.run(command, hide=hide)
-    if result.exited != 0:
-        print(f"Failed to build Docker image {docker_name}\nError: {result.stderr}")
+    run_cmd(
+        context=context,
+        exec_cmd=command,
+        pty=False,
+        hide=hide,
+        error_message=f"Failed to build Docker image {docker_name}",
+    )
 
 
 @task
@@ -166,8 +177,10 @@ def preview(context):
     """Test the 'Preview' functionality in the container."""
     command = (
         f"docker run -t "
-        f"-e LEANPUB_API_KEY={LEANPUB_API_KEY} -e LEANPUB_BOOK_SLUG={LEANPUB_BOOK_SLUG} "
-        f"{IMAGE_NAME}:{IMAGE_VER} --preview"
+        f"-e INPUT_LEANPUB-API-KEY={LEANPUB_API_KEY} "
+        f"-e INPUT_LEANPUB-BOOK-SLUG={LEANPUB_BOOK_SLUG} "
+        f"-e INPUT_PREVIEW=true"
+        f"{IMAGE_NAME}:{IMAGE_VER}"
     )
     # print(f"{command}")  # Commenting out as this can print secrets
     context.run(f"{command}", pty=True)
@@ -188,34 +201,104 @@ def tests(context):
     print("All tests have passed!")
 
 
+@task(
+    help={
+        "patch": "Semvar patch version bump, i.e. v0.0.1 to v0.0.2",
+        "minor": "Semvar minor version bump, i.e. v0.0.1 to v0.1.0",
+        "major": "Semvar major version bump, i.e. v0.0.1 to v1.0.0",
+    }
+)
+def pre_release(context, patch=False, minor=False, major=False):
+    """Pre-release actions."""
+    bump_type = ""
+    if patch:
+        bump_type = "patch"
+    elif minor:
+        bump_type = "minor"
+    elif major:
+        bump_type = "major"
+
+    # Check if more than one type was specified (or none)
+    if not patch and not minor and not major:
+        raise invoke.exceptions.Exit("You must specify a patch/minor/major version bump!")
+    if patch and (minor or major):
+        raise invoke.exceptions.Exit("You must only specify ONE of patch/minor/major!")
+    if minor and (patch or major):
+        raise invoke.exceptions.Exit("You must only specify ONE of patch/minor/major!")
+
+    print("Checking Git status")
+    run_cmd(
+        context,
+        exec_cmd="git diff --exit-code --name-status",
+        pty=False,
+        error_message="There are uncommitted changes, please commit or stash these files.",
+    )
+
+    print("Checking for Newsfragments")
+    run_cmd(
+        context,
+        exec_cmd="towncrier check --compare-with origin/main",
+        pty=False,
+        error_message=(
+            "There are committed changes, but no Newsfragments!\n"
+            "Please use `towncrier create <issuenum>.<type>` and summarize your changes in the resultant file."
+        ),
+    )
+
+    print(f"Starting pre-release actions to perform a {bump_type} version bump on {IMAGE_NAME}:{IMAGE_VER}")
+    run_cmd(
+        context,
+        exec_cmd=f"poetry version {bump_type}",
+        pty=False,
+        error_message=f"Unable to perform {bump_type} update on {IMAGE_NAME}:{IMAGE_VER}!",
+    )
+
+    new_image_ver = run_cmd(context, "poetry version --short", False).stdout
+    print(f"Project now at {IMAGE_NAME}:{new_image_ver}")
+
+    print("Copying existing Release Notes to Changelog")
+    changelog = pathlib.Path("CHANGELOG.rst")
+    current_changelog = changelog.read_text(encoding="utf8")
+    changelog.write_text(
+        pathlib.Path(PYPROJECT_CONFIG["tool"]["towncrier"]["filename"]).read_text(encoding="utf8") + current_changelog,
+        encoding="utf8",
+    )
+
+    print("Creating updated Release Notes")
+    run_cmd(
+        context,
+        exec_cmd=f"towncrier build --yes --version={new_image_ver}",
+        pty=False,
+        error_message="Unable to create new release notes!",
+    )
+
+    print("Committing the release notes and pushing to origin.")
+    run_cmd(
+        context,
+        exec_cmd=f"git commit --all --message 'Pre-release prep for {new_image_ver}'",
+        pty=False,
+        error_message="Unable to stage and commit changes!",
+    )
+
+    run_cmd(context, exec_cmd="git push", pty=False, error_message="Unable to push committed changes!")
+
+    print(
+        "\nNOTE - To finish the release process you will need to:\n"
+        "\t1: Open a PR and merge these changes into `main`\n"
+        "\t2: Run `invoke release` from the Poetry shell"
+    )
+
+
 @task
 def release(context):
     """Start a Release on GitHub."""
     print(f"Starting a release of v{IMAGE_VER} on GitHub!")
-    checkout = "git checkout main"
-    print(checkout)
-    result = context.run(checkout, pty=True)
-    if result.exited != 0:
-        print(f"Failed to checkout main!\nError: {result.stderr}")
-        return
+    run_cmd(context, exec_cmd="git checkout main", pty=False, error_message="Failed to checkout main!")
 
-    pull = "git pull origin main"
-    print(pull)
-    result = context.run(pull, pty=True)
-    if result.exited != 0:
-        print(f"Failed to pull from origin main!\nError: {result.stderr}")
-        return
+    run_cmd(context, exec_cmd="git pull origin main", pty=False, error_message="Failed to pull from origin/main")
 
-    tag = f"git tag v{IMAGE_VER}"
-    print(tag)
-    result = context.run(tag, pty=True)
-    if result.exited != 0:
-        print(f"Failed to create the tag 'v{IMAGE_VER}'!\nError: {result.stderr}")
-        return
+    run_cmd(
+        context, exec_cmd=f"git tag v{IMAGE_VER}", pty=False, error_message=f"Failed to create the tag 'v{IMAGE_VER}'!"
+    )
 
-    tag_push = "git push --tags"
-    print(tag_push)
-    result = context.run(tag_push, pty=True)
-    if result.exited != 0:
-        print(f"Failed to push the tag 'v{IMAGE_VER}'!\nError: {result.stderr}")
-        return
+    run_cmd(context, exec_cmd="git push --tags", pty=False, error_message=f"Failed to push the tag 'v{IMAGE_VER}'!")

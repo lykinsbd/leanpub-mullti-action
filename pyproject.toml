@@ -81,7 +81,8 @@ addopts = "-vv --doctest-modules"
 
 [tool.towncrier]
 package = "leanpub_multi_action"
-filename = "NEWS.rst"
+filename = "RELEASE_NOTES.rst"
+single_file = false
 name = "Leanpub Multi Action"
 
 [tool.isort]
