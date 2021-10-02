@@ -260,7 +260,9 @@ def pre_release(context, patch=False, minor=False, major=False):
     changelog = pathlib.Path("CHANGELOG.rst")
     current_changelog = changelog.read_text(encoding="utf8")
     changelog.write_text(
-        pathlib.Path(PYPROJECT_CONFIG["tool"]["towncrier"]["filename"]).read_text(encoding="utf8") + current_changelog,
+        pathlib.Path(PYPROJECT_CONFIG["tool"]["towncrier"]["filename"]).read_text(encoding="utf8")
+        + "\n\n"
+        + current_changelog,
         encoding="utf8",
     )
 
