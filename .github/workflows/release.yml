@@ -27,7 +27,7 @@ jobs:
         uses: "softprops/action-gh-release@v1"
         with:
           files: "dist/*"
-          body_path: "NEWS.rst"
+          body_path: "RELEASE_NOTES.rst"
   publish_container:
     name: "Publish Container Artifacts"
     runs-on: "ubuntu-20.04"
