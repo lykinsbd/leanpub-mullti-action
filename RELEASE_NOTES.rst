@@ -1,15 +1,7 @@
-Leanpub Multi Action 0.6.0 (2021-10-01)
+Leanpub Multi Action 1.0.0 (2021-10-03)
 =======================================
 
 Features
 --------
 
-- Adds pre-release Invoke task.
-
-  Makes other modifications and optimizations ot invoke tasks. (#45)
-
-
-Bugfixes
---------
-
-- Attempt to fix the argument handling for docker. (#13)
+- Adds Input and Example sections to Readme to make this usable for others. (#12)
