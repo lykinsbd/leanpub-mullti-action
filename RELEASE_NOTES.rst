@@ -1,7 +1,7 @@
-Leanpub Multi Action 1.0.1 (2021-10-03)
+Leanpub Multi Action 1.0.2 (2021-10-03)
 =======================================
 
 Bugfixes
 --------
 
-- Updates the example workflow file in README.md on each subsequent release. (#48)
+- Fixes issue with extra newline character in version number. (#50)
