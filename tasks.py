@@ -274,7 +274,11 @@ def pre_release(context, patch=False, minor=False, major=False):
         error_message="Unable to create new release notes!",
     )
 
-    print("Committing the release notes and pushing to origin.")
+    print("Updating example in README.md")
+    readme = pathlib.Path("README.md")
+    readme.write_text(readme.read_text(encoding="utf8").replace(f"v{IMAGE_VER}", f"v{new_image_ver}"), encoding="utf8")
+
+    print("Committing the changes and pushing to origin.")
     run_cmd(
         context,
         exec_cmd=f"git commit --all --message 'Pre-release prep for {new_image_ver}'",
