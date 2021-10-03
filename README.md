@@ -39,8 +39,7 @@ jobs:
     steps:
       # Kick off a preview
       - name: "Preview Build"
-        uses: "lykinsbd/leanpub-multi-action@v1.0.1
-"
+        uses: "lykinsbd/leanpub-multi-action@v1.0.2"
         with:
           leanpub-api-key: "${{secrets.LEANPUB_API_KEY}}"
           leanpub-book-slug: "mygreatbook"

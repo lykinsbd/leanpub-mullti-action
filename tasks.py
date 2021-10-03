@@ -253,7 +253,7 @@ def pre_release(context, patch=False, minor=False, major=False):
         error_message=f"Unable to perform {bump_type} update on {IMAGE_NAME}:{IMAGE_VER}!",
     )
 
-    new_image_ver = run_cmd(context, "poetry version --short", False).stdout
+    new_image_ver = run_cmd(context, "poetry version --short | tr -d '\n'", False).stdout
     print(f"Project now at {IMAGE_NAME}:{new_image_ver}")
 
     print("Copying existing Release Notes to Changelog")
